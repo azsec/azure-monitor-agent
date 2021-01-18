@@ -1,84 +1,65 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "dcrSecurityName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of Data Collection Rule"
-            }
-        },
-        "securityWorkspaceId": {
-            "type": "string",
-            "metadata": {
-                "description": "ID of the Log Analytics workspace"
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dcrSecurityName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Data Collection Rule"
+      }
     },
-    "variables": {},
-    "resources": [
-        {
-            "type": "Microsoft.Insights/dataCollectionRules",
-            "apiVersion": "2019-11-01-preview",
-            "name": "[parameters('dcrSecurityName')]",
-            "location": "westus",
-            "properties": {
-                "dataSources": {
-                    "windowsEventLogs": [
-                        {
-                            "streams": [
-                                "Microsoft-Event"
-                            ],
-                            "scheduledTransferPeriod": "PT5M",
-                            "xPathQueries": [
-                                "Security!*[System[(band(Keywords,13510798882111488))]]"
-                            ],
-                            "name": "eventLogsDataSource"
-                        }
-                    ],
-                    "syslog": [
-                        {
-                            "streams": [
-                                "Microsoft-Syslog"
-                            ],
-                            "facilityNames": [
-                                "auth",
-                                "authpriv"
-                            ],
-                            "logLevels": [
-                                "Debug",
-                                "Info",
-                                "Notice",
-                                "Warning",
-                                "Error",
-                                "Critical",
-                                "Alert",
-                                "Emergency"
-                            ],
-                            "name": "syslogSecuritySource"
-                        }
-                    ]
-                },
-                "destinations": {
-                    "logAnalytics": [
-                        {
-                            "workspaceResourceId": "[parameters('securityWorkspaceId')]",
-                            "name": "securityWorkspace"
-                        }
-                    ]
-                },
-                "dataFlows": [
-                    {
-                        "streams": [
-                            "Microsoft-Event",
-                            "Microsoft-Syslog"
-                        ],
-                        "destinations": [
-                            "securityWorkspace"
-                        ]
-                    }
-                ]
+    "securityWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "ID of the Log Analytics workspace"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2019-11-01-preview",
+      "name": "[parameters('dcrSecurityName')]",
+      "location": "westus",
+      "properties": {
+        "dataSources": {
+          "windowsEventLogs": [
+            {
+              "streams": ["Microsoft-Event"],
+              "scheduledTransferPeriod": "PT5M",
+              "xPathQueries": [
+                "Security!*[System[(band(Keywords,13510798882111488))]]"
+              ],
+              "name": "eventLogsDataSource"
             }
-        }
-    ]
+          ],
+          "syslog": [
+            {
+              "streams": ["Microsoft-Syslog"],
+              "facilityNames": ["auth", "authpriv"],
+              "logLevels": [
+                "Debug"
+              ],
+              "name": "syslogSecuritySource"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('securityWorkspaceId')]",
+              "name": "securityWorkspace"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": ["Microsoft-Event", "Microsoft-Syslog"],
+            "destinations": ["securityWorkspace"]
+          }
+        ]
+      }
+    }
+  ]
 }

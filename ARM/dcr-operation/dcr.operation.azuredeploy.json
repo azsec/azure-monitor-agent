@@ -1,78 +1,64 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "dcrOperationName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of Data Collection Rule"
-            }
-        },
-        "workspaceId": {
-            "type": "string",
-            "metadata": {
-                "description": "ID of the Log Analytics workspace"
-            }
-        }
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dcrOperationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Data Collection Rule"
+      }
     },
-    "variables": {},
-    "resources": [
-        {
-            "type": "Microsoft.Insights/dataCollectionRules",
-            "apiVersion": "2019-11-01-preview",
-            "name": "[parameters('dcrOperationName')]",
-            "location": "westus",
-            "properties": {
-                "dataSources": {
-                    "windowsEventLogs": [
-                        {
-                            "streams": [
-                                "Microsoft-Event"
-                            ],
-                            "scheduledTransferPeriod": "PT5M",
-                            "xPathQueries": [
-                                "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=5)]]",
-                                "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=5)]]"
-                            ],
-                            "name": "operationalWindowsLog"
-                        }
-                    ],
-                    "syslog": [
-                        {
-                            "streams": [
-                                "Microsoft-Syslog"
-                            ],
-                            "facilityNames": [
-                                "cron",
-                                "daemon"
-                            ],
-                            "logLevels": [
-                                "Debug"
-                            ],
-                            "name": "operationalSyslog"
-                        }
-                    ]
-                },
-                "destinations": {
-                    "logAnalytics": [
-                        {
-                            "workspaceResourceId": "[parameters('workspaceId')]",
-                            "name": "localWorkspace"
-                        }
-                    ]
-                },
-                "dataFlows": [
-                    {
-                        "streams": [
-                            "Microsoft-Event",
-                            "Microsoft-Syslog"
-                        ],
-                        "destinations": [
-                            "localWorkspace"
-                        ]
-                    }
-                ]
+    "workspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "ID of the Log Analytics workspace"
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2019-11-01-preview",
+      "name": "[parameters('dcrOperationName')]",
+      "location": "westus",
+      "properties": {
+        "dataSources": {
+          "windowsEventLogs": [
+            {
+              "streams": ["Microsoft-Event"],
+              "scheduledTransferPeriod": "PT5M",
+              "xPathQueries": [
+                "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=5)]]",
+                "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=5)]]"
+              ],
+              "name": "operationalWindowsLog"
             }
-        }
-    ]
+          ],
+          "syslog": [
+            {
+              "streams": ["Microsoft-Syslog"],
+              "facilityNames": ["cron", "daemon"],
+              "logLevels": ["Debug"],
+              "name": "operationalSyslog"
+            }
+          ]
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[parameters('workspaceId')]",
+              "name": "localWorkspace"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": ["Microsoft-Event", "Microsoft-Syslog"],
+            "destinations": ["localWorkspace"]
+          }
+        ]
+      }
+    }
+  ]
 }
