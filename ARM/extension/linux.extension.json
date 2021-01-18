@@ -1,0 +1,13 @@
+{
+  "type": "Microsoft.Compute/virtualMachines/extensions",
+  "name": "[concat(parameters('vmName'), '/AMALinux')]",
+  "apiVersion": "2019-07-01",
+  "location": "[parameters('location')]",
+  "dependOn": ["[parameters('vmName')]"],
+  "properties": {
+    "publisher": "Microsoft.Azure.Monitor",
+    "type": "AzureMonitorLinuxAgent",
+    "typeHandlerVersion": "1.5",
+    "autoUpgradeMinorVersion": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+    "type": "Microsoft.Compute/virtualMachines/extensions",
+    "name": "[concat(parameters('vmName'), '/AMAWindows')]",
+    "apiVersion": "2019-07-01",
+    "location": "[parameters('location')]",
+    "dependOn": ["[parameters('vmName')]"],
+    "properties": {
+      "publisher": "Microsoft.Azure.Monitor",
+      "type": "AzureMonitorWindowsAgent",
+      "typeHandlerVersion": "1.5",
+      "autoUpgradeMinorVersion": true
+    }
+  }
+  
